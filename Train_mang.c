@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 //#include <time.h>
-#define delta 0.0000001
+#define delta 0.000001
 
 
 float init_weight (); //Vì trọng số ban đầu được cho ngẫu nhiên nên dùng 1 hàm để tạo ngẫu nhiên trọng số
