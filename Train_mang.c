@@ -191,7 +191,7 @@ float dsigmoid( float x){
 void bias( float b[], int num){
     int i;
     for (i = 0; i < num; i++){
-        b[i] = 0.1;
+        b[i] = 1;
     }
 }
 
@@ -255,7 +255,7 @@ void  gradient_descent(float w[][100], float n, float d[], float Input[], float 
     }
     for (i = 0; i < num1; i++){
         for (j = 0; j <num2; j++){
-            w[i][j] += t[j];
+            w[i][j] += t[i];
         }
     }
 }
