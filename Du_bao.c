@@ -52,8 +52,60 @@ int main(){
     
 
     if (p == 1){
-        printf("Nhap doanh thu cua %d ngay truoc ngay muon du bao: ", numInputs);
-        Nhap(Input, numInputs);
+        int choice;
+        printf("Ban muon du bao 1 ngay hay nhieu ngay lien tiep? (1: mot ngay, 2: nhieu ngay lien tiep)");
+        scanf("%d", &choice);
+        if (choice == 1){
+            printf("Nhap doanh thu cua %d ngay truoc ngay muon du bao: ", numInputs);
+            Nhap(Input, numInputs);
+        }
+        if (choice == 2){
+            printf("Nhap doanh thu cua %d ngay truoc ngay muon du bao: ", numInputs);
+            Nhap(Input, numInputs);
+            Ghi_data_Ngay(Input, numInputs);
+            int ngay;
+            float Input_file[30];
+            FILE *doanhthu;
+            doanhthu = fopen("C:\\Users\\HP\\Desktop\\doanhthu.txt", "r");
+            printf("Ban muon du bao toi ngay thu: ");
+            scanf("%d", &ngay);
+            int i = 2;
+            while (i < ngay){
+                i++;
+                read_file_input(doanhthu, Input_file, i);
+
+                chuyen_input(Input, Input_file, i - 1);
+
+                FILE *weight_hidden;
+                FILE *weight_output;
+                weight_hidden = fopen("C:\\Users\\HP\\Desktop\\Hiddenweight.txt", "r");
+                weight_output = fopen("C:\\Users\\HP\\Desktop\\Outputweight.txt", "r");
+
+                read_file_weight (weight_hidden, hiddenWeight, numHiddenNodes, numInputs);
+                read_file_weight (weight_output, ouputWeight, numOutput, numHiddenNodes);
+    
+                fclose (weight_hidden);
+                fclose (weight_output);
+    
+                float z_Hiddens[numHiddenNodes];
+                float z_Output[numOutput]; 
+    
+                float y_Hiddens[numHiddenNodes];
+                float y_Output[numOutput];
+    
+                logistic_regression_1(z_Hiddens, hiddenWeight, hiddenBias, Input, numHiddenNodes, numInputs);
+                y_tinh_toan(y_Hiddens, z_Hiddens, numHiddenNodes);
+    
+                logistic_regression_2(z_Output, ouputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
+                y_tinh_toan(y_Output, z_Output, numOutput);
+    
+                Ghi_data_Ngay(y_Output, numOutput); 
+
+                IN(y_Output, numOutput);
+            }
+            fclose(doanhthu);
+            exit(0);
+        }
     }
     if (p == 2) {
         char address[1000];
@@ -91,7 +143,7 @@ int main(){
             chuyen_input(Input, Input_file, ngay - 1); // vì mảng chạy từ số 0 nên phải trừ ngày đi 1
         }
         if (choice == 2){
-            printf("Nhap so ngay muon du bao toi ngay thu: ");
+            printf("Ban muon du bao toi ngay thu: ");
             scanf("%d", &ngay);
             int i = 2;
             while (i < ngay){
@@ -128,6 +180,10 @@ int main(){
                 IN(y_Output, numOutput);
             }
             fclose(doanhthu);
+            exit(0);
+        }
+        if (choice != 1 && choice != 2 ) {
+            printf("ERORR !");
             exit(0);
         }
     }
@@ -178,7 +234,7 @@ float sigmoid(float x){
 void bias( float b[], int num){
     int i;
     for (i = 0; i < num; i++){
-        b[i] = 0.1;
+        b[i] = 1;
     }
 }
 
