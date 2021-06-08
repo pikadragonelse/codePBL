@@ -28,7 +28,9 @@ void sai_so(float s[], float y1[], float y2[], int num); //Tính toán sai số 
 
 void tin_hieu_loi(float d[], float w[][100], float s[], int num1, int num2); // Nói cách khác là learning_rate
 
-void  gradient_descent(float w[][100], float n, float d[], float Input[], float z[], int num1, int num2);
+void  gradient_descent1(float w[][100], float n, float d[], float Input[], float z[], int num1, int num2);
+
+void  gradient_descent2(float w[][100], float n, float d[], float Input[], float z[], int num1, int num2);
 
 void IN(float y[], int num);
 
@@ -40,17 +42,20 @@ void Ghi_data_Output_weight( float w[][100], int num1, int num2); //Dùng để 
 
 
 /* Nên xác định các kích thước của mạng để dễ sử dụng (Dùng static vì tránh sự thay đổi không muốn của biến trong cả quá trình chạy chương trình đồng thời để tiện thay đổi kích thước của mạng sau này) */
-static const int numInputs = 2;
-static const int numHiddenNodes = 2;
+static const int numInputs = 4;
+static const int numHiddenNodes = 4;
 static const int numOutput = 1;
-static const float n = 1; // Trong Gradient descent có  dùng đến hằng số học nên dựa vào thực nghiệm chúng ta chọn giá trị cho hằng số học
+static const float n = 0.5; // Trong Gradient descent có  dùng đến hằng số học nên dựa vào thực nghiệm chúng ta chọn giá trị cho hằng số học
 
 
 int main(){
     //Cần phải sử dụng các mảng tính toán nên phải phân bổ các mảng cho các lớp, độ lệch và trọng số
 
     float hiddenWeight [numHiddenNodes] [numInputs];   /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
-    float ouputWeight [numOutput] [numHiddenNodes];    /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
+    float outputWeight [numOutput] [numHiddenNodes];
+
+    //float hiddenWeight [numHiddenNodes] [numInputs];   /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
+    //float outputWeight [numOutput] [numHiddenNodes];    /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
     
     float hiddenBias [numHiddenNodes];
     float outputBias [numOutput];
@@ -128,7 +133,7 @@ int main(){
     
     //srand((int)time(0));
     weight(hiddenWeight, numHiddenNodes, numInputs);
-    weight(ouputWeight, numOutput, numHiddenNodes);
+    weight(outputWeight, numOutput, numHiddenNodes);
     
     
     // Tính toán với hàm sigmoid cho các noron ở hiddenlayer và output layer
@@ -136,33 +141,34 @@ int main(){
     float z_Output[numOutput]; 
     
     float y_Hiddens[numHiddenNodes];
-    float y_Output[numOutput];
     
     float s[numOutput];
     float d[numHiddenNodes];
     
     while (1){
+
         logistic_regression_1(z_Hiddens, hiddenWeight, hiddenBias, Input, numHiddenNodes, numInputs);
         y_tinh_toan(y_Hiddens, z_Hiddens, numHiddenNodes);
-    
-        logistic_regression_2(z_Output, ouputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
-        y_tinh_toan(y_Output, z_Output, numOutput);
 
-        sai_so(s, y_thuc_te, y_Output, numOutput);
+        logistic_regression_2(z_Output, outputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
+
+        sai_so(s, y_thuc_te, z_Output, numOutput);
+
         
-        if (kiemtra(s, numOutput) == 0 ) break;
+        if (kiemtra(s, numOutput) == 0 ){
+            break; 
+        }
 
-        tin_hieu_loi(d, ouputWeight, s, numOutput, numHiddenNodes);
+        tin_hieu_loi(d, outputWeight, s, numOutput, numHiddenNodes);
 
-        gradient_descent(hiddenWeight, n, d, Input, z_Hiddens, numHiddenNodes, numInputs);
-        gradient_descent(ouputWeight, n, s, y_Hiddens, z_Output, numHiddenNodes, numOutput);
+        gradient_descent1(hiddenWeight, n, d, Input, z_Hiddens, numHiddenNodes, numInputs);
+        gradient_descent2(outputWeight, n, s, y_Hiddens, z_Output, numHiddenNodes, numOutput);
+        
     }
-    
-    IN(y_Output, numOutput);
-    
+
+    IN(z_Output, numOutput);
     Ghi_data_Hidden_weight(hiddenWeight, numHiddenNodes, numInputs);
-    Ghi_data_Output_weight(ouputWeight, numOutput, numHiddenNodes);
-    
+    Ghi_data_Output_weight(outputWeight, numOutput, numHiddenNodes);
     return 0;
 }
 
@@ -247,7 +253,8 @@ void tin_hieu_loi(float d[], float w[][100], float s[], int num1, int num2){
         }
     }
 }
-void  gradient_descent(float w[][100], float n, float d[], float Input[], float z[], int num1, int num2){
+
+void  gradient_descent1(float w[][100], float n, float d[], float Input[], float z[], int num1, int num2){
     int i, j;
     float t[101];
     for (i = 0; i < num2; i++){
@@ -259,6 +266,20 @@ void  gradient_descent(float w[][100], float n, float d[], float Input[], float 
         }
     }
 }
+
+void  gradient_descent2(float w[][100], float n, float d[], float Input[], float z[], int num1, int num2){
+    int i, j;
+    float t[101];
+    for (i = 0; i < num2; i++){
+        t[i] = n*d[i]*dsigmoid(z[i])*Input[i];
+    }
+    for (i = 0; i < num1; i++){
+        for (j = 0; j <num2; j++){
+            w[i][j] += t[j];
+        }
+    }
+}
+
 int kiemtra(float s[], int num){
     int i;
     int dem = 0;
