@@ -27,15 +27,15 @@ void chuyen_input(float input1[], float input2[], int num); // chuyển input t�
 void read_file_weight(FILE *file, float w[][100], int num1, int num2);
 
 /* Nên xác định các kích thước của mạng để dễ sử dụng (Dùng static vì tránh sự thay đổi không muốn của biến trong cả quá trình chạy chương trình đồng thời để tiện thay đổi kích thước của mạng sau này) */
-static const int numInputs = 2;
-static const int numHiddenNodes = 2;
+static const int numInputs = 4;
+static const int numHiddenNodes = 4;
 static const int numOutput = 1;
 
 int main(){
     //Cần phải sử dụng các mảng tính toán nên phải phân bổ các mảng cho các lớp, độ lệch và trọng số
 
     float hiddenWeight [numHiddenNodes] [numInputs];   /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
-    float ouputWeight [numOutput] [numHiddenNodes];    /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
+    float outputWeight [numOutput] [numHiddenNodes];    /* đặt số lượng hàng cột của mảng như thế này để tiện tính toán */
     
     float hiddenBias [numHiddenNodes];
     float outputBias [numOutput];
@@ -53,7 +53,7 @@ int main(){
 
     if (p == 1){
         int choice;
-        printf("Ban muon du bao 1 ngay hay nhieu ngay lien tiep? (1: mot ngay, 2: nhieu ngay lien tiep)");
+        printf("Ban muon du bao 1 ngay hay nhieu ngay lien tiep? (1: mot ngay, 2: nhieu ngay lien tiep): ");
         scanf("%d", &choice);
         if (choice == 1){
             printf("Nhap doanh thu cua %d ngay truoc ngay muon du bao: ", numInputs);
@@ -82,7 +82,7 @@ int main(){
                 weight_output = fopen("C:\\Users\\HP\\Desktop\\Outputweight.txt", "r");
 
                 read_file_weight (weight_hidden, hiddenWeight, numHiddenNodes, numInputs);
-                read_file_weight (weight_output, ouputWeight, numOutput, numHiddenNodes);
+                read_file_weight (weight_output, outputWeight, numOutput, numHiddenNodes);
     
                 fclose (weight_hidden);
                 fclose (weight_output);
@@ -96,7 +96,7 @@ int main(){
                 logistic_regression_1(z_Hiddens, hiddenWeight, hiddenBias, Input, numHiddenNodes, numInputs);
                 y_tinh_toan(y_Hiddens, z_Hiddens, numHiddenNodes);
     
-                logistic_regression_2(z_Output, ouputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
+                logistic_regression_2(z_Output, outputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
                 y_tinh_toan(y_Output, z_Output, numOutput);
     
                 Ghi_data_Ngay(y_Output, numOutput); 
@@ -131,7 +131,7 @@ int main(){
         int ngay;
         int choice;
         float Input_file[30];
-        printf("Ban muon du bao 1 ngay hay nhieu ngay lien tiep? (1: mot ngay, 2: nhieu ngay lien tiep)");
+        printf("Ban muon du bao 1 ngay hay nhieu ngay lien tiep? (1: mot ngay, 2: nhieu ngay lien tiep): ");
         scanf("%d", &choice);
         
         if (choice == 1){
@@ -158,7 +158,7 @@ int main(){
                 weight_output = fopen("C:\\Users\\HP\\Desktop\\Outputweight.txt", "r");
 
                 read_file_weight (weight_hidden, hiddenWeight, numHiddenNodes, numInputs);
-                read_file_weight (weight_output, ouputWeight, numOutput, numHiddenNodes);
+                read_file_weight (weight_output, outputWeight, numOutput, numHiddenNodes);
     
                 fclose (weight_hidden);
                 fclose (weight_output);
@@ -172,7 +172,7 @@ int main(){
                 logistic_regression_1(z_Hiddens, hiddenWeight, hiddenBias, Input, numHiddenNodes, numInputs);
                 y_tinh_toan(y_Hiddens, z_Hiddens, numHiddenNodes);
     
-                logistic_regression_2(z_Output, ouputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
+                logistic_regression_2(z_Output, outputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
                 y_tinh_toan(y_Output, z_Output, numOutput);
     
                 Ghi_data_Ngay(y_Output, numOutput); 
@@ -200,9 +200,9 @@ int main(){
     weight_output = fopen("C:\\Users\\HP\\Desktop\\Outputweight.txt", "r");
 
     read_file_weight (weight_hidden, hiddenWeight, numHiddenNodes, numInputs);
-    read_file_weight (weight_output, ouputWeight, numOutput, numHiddenNodes);
-    
     fclose (weight_hidden);
+    
+    read_file_weight (weight_output, outputWeight, numOutput, numHiddenNodes);
     fclose (weight_output);
     
     float z_Hiddens[numHiddenNodes];
@@ -214,7 +214,7 @@ int main(){
     logistic_regression_1(z_Hiddens, hiddenWeight, hiddenBias, Input, numHiddenNodes, numInputs);
     y_tinh_toan(y_Hiddens, z_Hiddens, numHiddenNodes);
     
-    logistic_regression_2(z_Output, ouputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
+    logistic_regression_2(z_Output, outputWeight, outputBias, y_Hiddens, numOutput, numHiddenNodes);
     y_tinh_toan(y_Output, z_Output, numOutput);
     
     Ghi_data_Ngay(y_Output, numOutput); 
